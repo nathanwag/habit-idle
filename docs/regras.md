@@ -22,7 +22,8 @@ nunca são gravados: saem do recálculo. Todo sorteio usa uma semente fixa
 ## Fôlego
 
 Saldo em minutos. Com saldo positivo e pelo menos um herói, o esquadrão
-explora e gasta 1 minuto de saldo por minuto de relógio.
+explora e gasta 1 minuto de saldo por minuto de relógio. A conta começa no
+primeiro check ou no início do jogo, o que vier antes.
 
 - **Check**: marcar um hábito no próprio dia dá o fôlego do esforço dele
   (leve 60, médio 120, pesado 180 min) na hora do toque. Marcar um dia passado
@@ -43,13 +44,14 @@ explora e gasta 1 minuto de saldo por minuto de relógio.
 
 ## Cansaço
 
-Calculado na virada, para o dia que fechou, e vale a partir dela:
+Calculado na virada, para o dia que fechou, e vale a partir dela. Só conta
+depois do início do jogo (o primeiro herói):
 
 | Dia que fechou | Cansaço |
 |---|---|
 | nenhum check no próprio dia | +10% (máximo 30%) |
 | todas as missões feitas | volta a 0% |
-| algumas missões feitas | −10% (mínimo 0%) |
+| algum check, mas não todas as missões | −10% (mínimo 0%) |
 | sem missões naquele dia | não muda |
 
 O cansaço multiplica todos os valores de combate e o Poder por `1 − cansaço`.
