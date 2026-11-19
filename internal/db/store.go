@@ -160,3 +160,40 @@ func Checks(log []LogEntry) []core.Check {
 	}
 	return out
 }
+
+type Event struct {
+	ID   int
+	At   time.Time
+	Kind string
+	Data string
+}
+
+func AddEvent(q Querier, e Event) error {
+	_, err := q.Exec("INSERT INTO event(at, kind, data) VALUES(?, ?, ?)", e.At.UTC().Format(time.RFC3339Nano), e.Kind, e.Data)
+	return err
+}
+
+func Events(q Querier) ([]Event, error) {
+	rows, err := q.Query("SELECT id, at, kind, data FROM event ORDER BY id")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []Event
+	for rows.Next() {
+		var e Event
+		var at string
+		if err := rows.Scan(&e.ID, &at, &e.Kind, &e.Data); err != nil {
+			return nil, err
+		}
+		e.At, _ = time.Parse(time.RFC3339Nano, at)
+		out = append(out, e)
+	}
+	return out, rows.Err()
+}
+
+// ResetGame apaga as escolhas do jogador; hábitos e checks ficam.
+func ResetGame(q Querier) error {
+	_, err := q.Exec("DELETE FROM event")
+	return err
+}

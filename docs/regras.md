@@ -54,7 +54,7 @@ depois do início do jogo (o primeiro herói):
 | algum check, mas não todas as missões | −10% (mínimo 0%) |
 | sem missões naquele dia | não muda |
 
-O cansaço multiplica todos os valores de combate e o Poder por `1 − cansaço`.
+O cansaço multiplica o dano, a vida e o Poder por `1 − cansaço`.
 
 ## Heróis
 
@@ -101,15 +101,15 @@ Cada herói tem pontos em ATK, DEF, HP, VEL e SORTE:
 
 ### XP e nível
 
-- XP para ir do nível L para L+1: `100 × 1,25^(L−1)`, arredondado.
+- XP para ir do nível L para L+1: `100 × 1,12^(L−1)`, arredondado.
 - O XP de cada andar vai inteiro para cada herói do esquadrão.
 
 ## Torre
 
 Infinita. O andar n tem:
 
-- **vida dos inimigos** `V(n) = 1800 × 1,12^(n−1)`;
-- **ameaça** `A(n) = 100 × 1,12^(n−1)`;
+- **vida dos inimigos** `V(n) = 1800 × 1,07^(n−1)`;
+- **ameaça** `A(n) = 100 × 1,07^(n−1)`;
 - **moedas** `10 + 3n`; **XP** `20 + 5n`;
 - **baú**: 20% de chance (sorteio por andar e passagem).
 
@@ -128,7 +128,8 @@ devagar (descansa entre as lutas). Andar comum nunca é perdido.
     pela DEF dele;
   - vence quem zera a vida do outro; no tempo esgotado, o chefe vence.
 - **Status do chefe** k (andar 10k) vêm de um esquadrão de referência: os
-  heróis base, no nível `1 + 4k`, com `min(3, k)` heróis (ATK, DEF e HP como
+  heróis base, no nível que um herói alcança com o XP dos andares antes do
+  chefe, sem compras nem itens, com `min(3, k)` heróis (ATK, DEF e HP como
   especialistas, nessa ordem). O chefe tem vida = DPS da referência × 60 s e
   DPS = vida efetiva da referência ÷ 75 s. A referência vence com folga; o
   **poder recomendado** é o Poder dessa referência.
@@ -160,3 +161,30 @@ devagar (descansa entre as lutas). Andar comum nunca é perdido.
   volta ao inventário), `sell` (moedas = `10 × multiplicador × (1 + andar ÷ 10)`)
   e `refine` (dois itens de mesmo nome e raridade viram um com +1 de refino,
   até +10; cada +1 soma 10% aos pontos do item).
+
+## Ritmo esperado
+
+Gerado por `go run ./cmd/habit-idle balance` (esquadrão de referência, sem
+compras nem itens). Regerar ao mudar `balance.go`.
+
+| Andar | Nível | Heróis | Min/andar | Min/andar (só Kael) | Moedas | XP |
+|---|---|---|---|---|---|---|
+| 1 | 1 | 1 | 72 | 180 | 13 | 25 |
+| 5 | 2 | 1 | 75 | 180 | 25 | 45 |
+| 10 | 4 | 1 | 72 | 164 | 40 | 70 |
+| 15 | 6 | 2 | 51 | 163 | 55 | 95 |
+| 20 | 9 | 2 | 48 | 151 | 70 | 120 |
+| 25 | 11 | 3 | 41 | 168 | 85 | 145 |
+| 30 | 13 | 3 | 46 | 192 | 100 | 170 |
+| 35 | 15 | 3 | 54 | 223 | 115 | 195 |
+| 40 | 17 | 3 | 64 | 299 | 130 | 220 |
+| 45 | 19 | 3 | 77 | 434 | 145 | 245 |
+| 50 | 20 | 3 | 100 | 739 | 160 | 270 |
+
+| Chefe | Nível da referência | Heróis | Poder recomendado | Vida | Dano/s |
+|---|---|---|---|---|---|
+| 10 | 4 | 1 | 440 | 2773 | 3 |
+| 20 | 9 | 2 | 1480 | 8172 | 14 |
+| 30 | 13 | 3 | 2940 | 16537 | 40 |
+| 40 | 17 | 3 | 3660 | 23616 | 54 |
+| 50 | 20 | 3 | 4200 | 29830 | 65 |

@@ -6,12 +6,17 @@ import (
 	"os"
 
 	"habit-idle/internal/db"
+	"habit-idle/internal/game"
 	"habit-idle/internal/server"
 	"habit-idle/web"
 	_ "time/tzdata"
 )
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "balance" {
+		game.Table(os.Stdout, 50)
+		return
+	}
 	d, err := db.Open(db.DefaultPath())
 	if err != nil {
 		log.Fatal(err)
