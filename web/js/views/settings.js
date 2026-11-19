@@ -21,7 +21,7 @@ export async function view(ctx) {
             <button type="button" class="row" data-click="reset"><span style="flex:1;color:var(--bad)">Recomeçar a torre do zero</span><span class="pf muted">›</span></button>
           </div></div>
         <div class="card small muted" style="padding:12px;line-height:1.6">
-          <div style="display:flex;justify-content:space-between"><span class="pf" style="font-size:15px;color:var(--text)">habit-idle</span><span>protótipo</span></div>
+          <div style="display:flex;justify-content:space-between"><span class="pf" style="font-size:15px;color:var(--text)">Rasko</span><span>protótipo</span></div>
           <div>Arte pixel: 0x72 DungeonTileset II (CC0). Paleta Apollo.</div>
         </div>
       </div></div>${nav('#/ajustes')}`,

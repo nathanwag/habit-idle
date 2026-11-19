@@ -1,4 +1,4 @@
-# habit-idle
+# Rasko
 
 Tracker de hábitos que vira um jogo idle de torre: cada hábito feito dá fôlego,
 e com fôlego o esquadrão sobe a torre sozinho.

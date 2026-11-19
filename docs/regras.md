@@ -1,4 +1,4 @@
-# Regras do habit-idle
+# Regras do Rasko
 
 Fonte da verdade do jogo. Todo número aqui é provisório e mora em
 `internal/game/balance.go`; mudou lá, muda aqui no mesmo commit.

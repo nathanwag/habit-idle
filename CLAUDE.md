@@ -2,9 +2,10 @@
 
 ## O que é
 
-**habit-idle** (nome provisório): tracker de hábitos que vira um jogo idle de
+**Rasko** (o lagarto do esquadrão dá nome ao app): tracker de hábitos que vira um jogo idle de
 torre. Cumprir hábitos dá **fôlego**; com fôlego o esquadrão sobe a torre
-sozinho e ganha moedas, XP e itens. Um usuário só, sem notificações.
+sozinho e ganha moedas, XP e itens. Um usuário só, sem notificações. No código,
+no binário, no serviço e no repo o nome continua `habit-idle`.
 
 As regras do jogo estão em **`docs/regras.md`**, e os números delas em
 `internal/game/balance.go`. Mudou um, muda o outro no mesmo commit.
@@ -91,6 +92,8 @@ equip, unequip, sell, refine), `PUT /api/seen`, `DELETE /api/game`
   `#view` tem um handler só por tipo, porque os filhos são recriados.
 - Ao abrir o app (ou voltar a ele), `app.js` mostra o Retorno se a última
   visita foi há mais de 2h e algo aconteceu; senão marca a visita.
+- Ícone do app: `go run ./scripts/icon` gera `web/assets/icons/*.png` (o
+  Rasko na porta da torre, pixel art 36×36 ampliado).
 - Sprites: 0x72 DungeonTileset II (CC0) em `web/assets/sprites`, fitas de 8
   quadros 16×28 (0–3 correndo, 4–7 parado). Os quadros soltos do pacote
   (`frames/*_idle_anim_f*` e `*_run_anim_f*`) viram uma fita assim.

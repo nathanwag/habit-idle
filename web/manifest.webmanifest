@@ -1,6 +1,6 @@
 {
-  "name": "habit-idle",
-  "short_name": "habit-idle",
+  "name": "Rasko",
+  "short_name": "Rasko",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#090a14",
