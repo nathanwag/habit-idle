@@ -22,7 +22,7 @@ export async function view(ctx) {
   };
   return {
     html: html`<div class="content">
-      <div class="head"><div><h1 class="title">Esquadrão</h1><div class="small muted">${g.squad.length} de 3 vagas · o primeiro leva os golpes do chefe</div></div>
+      <div class="head"><div><h1 class="title">Esquadrão</h1></div>
         <div style="text-align:right"><div class="label">PODER</div><div class="pf" style="font-size:24px;line-height:1">${num(g.power)}</div><div class="pf small" style="color:var(--accent)">${num(g.coins)} ${coin}</div></div></div>
       <div class="pad stack">
         ${g.recruits > 0 ? html`<div class="card" style="padding:12px;border-color:var(--accent)">
