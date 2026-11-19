@@ -99,8 +99,7 @@ a.row:hover{background:var(--surface2);color:var(--text)}
 .h-kael{background-image:url(../assets/sprites/kael.png)}
 .h-rasko{background-image:url(../assets/sprites/rasko.png)}
 .h-lyra{background-image:url(../assets/sprites/lyra.png)}
-/* Brom (anão) usa o cavaleiro tingido até entrar a arte do anão. */
-.h-brom{background-image:url(../assets/sprites/kael.png);filter:hue-rotate(150deg) saturate(1.4)}
+.h-brom{background-image:url(../assets/sprites/brom.png)}
 /* Fita de 8 quadros 16×28: 0–3 parado, 4–7 correndo. */
 .x2{width:32px;height:56px;background-size:256px 56px}
 .x3{width:48px;height:84px;background-size:384px 84px}
