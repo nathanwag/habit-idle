@@ -19,7 +19,10 @@ button{cursor:pointer}
 .muted{color:var(--muted)}
 .small{font-size:12px}
 
-#app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
+/* Em tela cheia no iPhone (status bar black-translucent) a página começa atrás da hora:
+   o recuo vem do próprio iOS, e a faixa fixa esconde o que rola por baixo dela. */
+#app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:20}
 #view{flex:1;display:flex;flex-direction:column}
 .content{flex:1;padding-bottom:16px}
 
@@ -31,7 +34,7 @@ button{cursor:pointer}
 
 /* Cabeçalho das telas principais e das internas (com voltar). */
 .head{padding:18px 14px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.top{display:flex;align-items:center;gap:4px;padding:6px 14px 6px 4px;background:var(--surface2);border-bottom:2px solid var(--line);position:sticky;top:0;z-index:2}
+.top{display:flex;align-items:center;gap:4px;padding:6px 14px 6px 4px;background:var(--surface2);border-bottom:2px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:2}
 .top h1{font-family:'Pixelify Sans',monospace;font-size:18px;font-weight:500;margin:0;flex:1}
 .back{width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--text);background:none;border:0}
 
@@ -90,7 +93,7 @@ a.row:hover{background:var(--surface2);color:var(--text)}
 .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 
-.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--surface);border:2px solid var(--accent);padding:8px 14px;font-family:'Pixelify Sans',monospace;z-index:10}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--surface);border:2px solid var(--accent);padding:8px 14px;font-family:'Pixelify Sans',monospace;z-index:10}
 .empty{padding:24px 14px;text-align:center;color:var(--muted)}
 
 /* ---- Jogo: sprites 0x72 (CC0), sempre pixelados ---- */
