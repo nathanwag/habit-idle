@@ -209,10 +209,11 @@ func (s *sim) apply(t Touch) {
 	}
 }
 
-// complete: o dia tem missões e todas estão feitas.
+// complete: o dia vale o bônus (missões suficientes) e todas estão feitas.
+// Com uma missão só, completar o dia seria fácil demais.
 func (s *sim) complete(day core.Day) bool {
 	missions, done := s.missions(day)
-	return missions > 0 && done == missions
+	return missions >= BonusMissions && done == missions
 }
 
 func (s *sim) missions(day core.Day) (missions, done int) {
@@ -251,7 +252,9 @@ func (s *sim) turn(t time.Time) {
 		s.fatigue = min(FatigueMax, s.fatigue+FatigueStep)
 	case done == missions:
 		s.fatigue = 0
-		s.result.Complete = append(s.result.Complete, closed)
+		if missions >= BonusMissions {
+			s.result.Complete = append(s.result.Complete, closed)
+		}
 	default:
 		s.fatigue = max(0, s.fatigue-FatigueStep)
 	}

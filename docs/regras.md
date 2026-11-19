@@ -33,7 +33,8 @@ primeiro check ou no início do jogo, o que vier antes.
   fôlego que entrar.
 - **Teto**: o saldo nunca passa de **16h** (960 min); o excesso de um ganho se
   perde.
-- **Dia completo**: marcar a última missão do dia dá +60 min na hora
+- **Dia completo** (só em dia com 2 missões ou mais: com uma só seria fácil
+  demais): marcar a última missão do dia dá +60 min na hora
   (desmarcar uma missão do dia tira esses 60). Se o dia virar completo, o
   esquadrão ganha também um **baú de andar**.
 - **Virada do dia**: saldo positivo cai pela metade (arredondado para baixo).

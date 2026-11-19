@@ -133,11 +133,27 @@ func TestUltimaMissaoDaBonusEDesmarcarTiraOBonus(t *testing.T) {
 
 func TestSemanalNaoContaParaODiaCompleto(t *testing.T) {
 	semanal := core.Habit{ID: 2, Effort: 60, CreatedDay: "2026-11-01", Versions: []core.Version{{From: "2026-11-01", Schedule: core.Schedule{Kind: core.Weekly, Times: 2}}}}
-	hs := []core.Habit{daily(1, 120, "2026-11-01"), semanal}
-	ts := []Touch{touch(1, "2026-11-19", "2026-11-19 09:00", true)}
+	hs := []core.Habit{daily(1, 120, "2026-11-01"), daily(3, 60, "2026-11-01"), semanal}
+	ts := []Touch{touch(1, "2026-11-19", "2026-11-19 09:00", true), touch(3, "2026-11-19", "2026-11-19 09:00", true)}
 	f := Folego(FolegoInput{Cal: cal, Habits: hs, Touches: ts, Now: at("2026-11-19 09:30")})
-	if f.Balance != mins(180) {
-		t.Fatalf("saldo = %v, quer 3h (2h + bônus)", f.Balance)
+	if f.Balance != mins(240) {
+		t.Fatalf("saldo = %v, quer 4h (2h + 1h + bônus)", f.Balance)
+	}
+}
+
+func TestDiaComUmaMissaoSoNaoDaBonusNemBau(t *testing.T) {
+	hs := []core.Habit{daily(1, 60, "2026-11-01")}
+	ts := []Touch{touch(1, "2026-11-19", "2026-11-19 09:00", true)}
+	f := Folego(FolegoInput{Cal: cal, Habits: hs, Touches: ts, Start: started("2026-11-19 08:00"), Now: at("2026-11-20 07:00")})
+	if len(f.Segments) != 1 || f.Segments[0].To.Sub(f.Segments[0].From) != mins(60) {
+		t.Fatalf("explorou %+v, quer só 1h", f.Segments)
+	}
+	if len(f.Complete) != 0 {
+		t.Fatalf("baú de dia completo com uma missão: %v", f.Complete)
+	}
+	// O dia continua cumprido para o cansaço.
+	if f.FatigueAt(at("2026-11-20 07:00")) != 0 {
+		t.Fatal("cansaço subiu")
 	}
 }
 

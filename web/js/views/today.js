@@ -69,7 +69,7 @@ export async function view(ctx) {
       </div>
       <div class="pad">${s.items.length ? html`<div class="card">${rows}</div>`
         : html`<p class="empty">Nenhum hábito hoje. <a href="#/habito/novo">Crie um</a> para dar fôlego ao esquadrão.</p>`}
-        ${s.missions && s.done < s.missions ? html`<p class="small muted" style="margin:8px 2px 0">Completar todas dá +1h e um baú.</p>` : ''}</div>
+        ${s.missions >= 2 && s.done < s.missions ? html`<p class="small muted" style="margin:8px 2px 0">Completar todas dá +1h e um baú.</p>` : ''}</div>
     </div>${nav('#/')}`,
     actions: {
       async toggle(el) {
