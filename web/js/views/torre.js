@@ -32,7 +32,7 @@ export async function view() {
       rows.push(html`<div class="fl" style="min-height:60px"><span class="num" style="background:var(--accent);color:var(--bg);height:56px;box-shadow:0 0 12px var(--accent)"><b>${n}</b></span>
         <span><span style="display:block;font-weight:600">${g.training ? 'Treinando aqui' : moving ? 'Explorando agora' : 'Parado aqui'}</span>
         <span class="bar" style="height:6px;margin-top:6px"><span style="width:${pct}%"></span></span>
-        <span class="small muted">${pct}% · o andar leva ~${hm(g.floorMins)} de fôlego</span></span><span></span></div>`);
+        <span class="small muted">${pct}%</span></span><span></span></div>`);
     } else {
       rows.push(html`<div class="fl"><span class="num" style="background:var(--line2)">${n}</span><span class="small muted">${zone(n)}</span><span class="pf small" style="color:var(--accent)">+${10 + 3 * n}</span></div>`);
     }

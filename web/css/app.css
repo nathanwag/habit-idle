@@ -100,18 +100,18 @@ a.row:hover{background:var(--surface2);color:var(--text)}
 .h-rasko{background-image:url(../assets/sprites/rasko.png)}
 .h-lyra{background-image:url(../assets/sprites/lyra.png)}
 .h-brom{background-image:url(../assets/sprites/brom.png)}
-/* Fita de 8 quadros 16×28: 0–3 parado, 4–7 correndo. */
+/* Fita de 8 quadros 16×28: 0–3 correndo, 4–7 parado. */
 .x2{width:32px;height:56px;background-size:256px 56px}
 .x3{width:48px;height:84px;background-size:384px 84px}
 .x4{width:64px;height:112px;background-size:512px 112px}
 .x2.idle{animation:i2 1s steps(4) infinite}.x2.run{animation:r2 .5s steps(4) infinite}
 .x3.idle{animation:i3 1s steps(4) infinite}.x3.run{animation:r3 .5s steps(4) infinite}
 .x4.idle{animation:i4 1s steps(4) infinite}
-@keyframes i2{from{background-position:0 0}to{background-position:-128px 0}}
-@keyframes r2{from{background-position:-128px 0}to{background-position:-256px 0}}
-@keyframes i3{from{background-position:0 0}to{background-position:-192px 0}}
-@keyframes r3{from{background-position:-192px 0}to{background-position:-384px 0}}
-@keyframes i4{from{background-position:0 0}to{background-position:-256px 0}}
+@keyframes i2{from{background-position:-128px 0}to{background-position:-256px 0}}
+@keyframes r2{from{background-position:0 0}to{background-position:-128px 0}}
+@keyframes i3{from{background-position:-192px 0}to{background-position:-384px 0}}
+@keyframes r3{from{background-position:0 0}to{background-position:-192px 0}}
+@keyframes i4{from{background-position:-256px 0}to{background-position:-512px 0}}
 .coin{display:inline-block;width:12px;height:14px;background:url(../assets/sprites/coin.png) 0 0/48px 14px;image-rendering:pixelated;animation:spin .6s steps(4) infinite;vertical-align:-2px}
 @keyframes spin{from{background-position:0 0}to{background-position:-48px 0}}
 .boss{width:128px;height:144px;background:url(../assets/sprites/zombie.png) 0 0/1024px 144px;image-rendering:pixelated;transform:scaleX(-1);animation:boss .9s steps(4) infinite}

@@ -89,7 +89,7 @@ equip, unequip, sell, refine), `PUT /api/seen`, `DELETE /api/game`
 - Ao abrir o app (ou voltar a ele), `app.js` mostra o Retorno se a última
   visita foi há mais de 2h e algo aconteceu; senão marca a visita.
 - Sprites: 0x72 DungeonTileset II (CC0) em `web/assets/sprites`, fitas de 8
-  quadros 16×28 (0–3 parado, 4–7 correndo). Os quadros soltos do pacote
+  quadros 16×28 (0–3 correndo, 4–7 parado). Os quadros soltos do pacote
   (`frames/*_idle_anim_f*` e `*_run_anim_f*`) viram uma fita assim.
 - Cores e componentes do Apollo em `css/app.css`; fontes em `web/assets/fonts`
   (nada carregado de fora). Input com 16px para o Safari não dar zoom.
