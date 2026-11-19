@@ -21,16 +21,13 @@ export async function view() {
   const g = s.game;
   const moving = s.folego.exploring;
   const squad = g.squad.map((id) => g.heroes.find((h) => h.id === id));
-  const rows = [
-    html`<div class="fl"><span class="num" style="background:var(--surface2);color:var(--muted);border:2px dashed var(--line2)">${g.nextBoss + 1}</span>
-      <span><span style="display:block;color:var(--muted)">${zone(g.nextBoss + 1)}</span><span class="small muted">Abre depois do chefe</span></span><span></span></div>`,
-    html`<a href="#/chefe" class="fl" style="min-height:52px"><span class="num" style="background:var(--bad);color:var(--bg);height:46px;flex-direction:column;line-height:1.05;font-weight:700"><span style="font-size:10px">CHEFE</span>${g.nextBoss}</span>
-      <span><span style="display:block;font-weight:600">Zumbi colosso</span><span class="small muted">pede <b style="color:var(--text)">${num(g.recommended)}</b> de poder · você tem ${num(g.power)}</span></span><span class="pf" style="color:var(--bad)">›</span></a>`,
-  ];
-  for (let n = g.nextBoss - 1; n >= Math.max(1, g.floor - 3); n--) {
-    if (n > g.floor) {
-      rows.push(html`<div class="fl"><span class="num" style="background:var(--surface);color:var(--muted);border:2px solid var(--line)">${n}</span><span class="small muted">${zone(n)}</span><span></span></div>`);
-    } else if (n === g.floor) {
+  // Para cima só se vê o próximo andar, e só o chefe tem cara antes de chegar.
+  const rows = [g.nextBoss === g.floor + 1
+    ? html`<a href="#/chefe" class="fl" style="min-height:52px"><span class="num" style="background:var(--bad);color:var(--bg);height:46px;flex-direction:column;line-height:1.05;font-weight:700"><span style="font-size:10px">CHEFE</span>${g.nextBoss}</span>
+      <span><span style="display:block;font-weight:600">Zumbi colosso</span><span class="small muted">pede <b style="color:var(--text)">${num(g.recommended)}</b> de poder · você tem ${num(g.power)}</span></span><span class="pf" style="color:var(--bad)">›</span></a>`
+    : html`<div class="fl"><span class="num pf" style="background:var(--surface2);color:var(--muted);border:2px dashed var(--line2);font-size:18px" aria-label="Próximo andar">?</span><span class="small muted">Próximo andar</span><span></span></div>`];
+  for (let n = g.floor; n >= Math.max(1, g.floor - 3); n--) {
+    if (n === g.floor) {
       const pct = Math.round(g.progress * 100);
       rows.push(html`<div class="fl" style="min-height:60px"><span class="num" style="background:var(--accent);color:var(--bg);height:56px;box-shadow:0 0 12px var(--accent)"><b>${n}</b></span>
         <span><span style="display:block;font-weight:600">${g.training ? 'Treinando aqui' : moving ? 'Explorando agora' : 'Parado aqui'}</span>

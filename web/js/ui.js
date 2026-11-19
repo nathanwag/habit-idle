@@ -20,6 +20,7 @@ export const toString = (tpl) => piece(tpl);
 export const icons = {
   back: html`<svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M12 4 L6 10 L12 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"></path></svg>`,
   close: html`<svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><path d="M3 3 L15 15 M15 3 L3 15" stroke="currentColor" stroke-width="2.5"></path></svg>`,
+  lock: html`<svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M6 10 V7 a5 5 0 0 1 10 0 V10 M4 10 H18 V20 H4 Z" fill="none" stroke="currentColor" stroke-width="2"></path></svg>`,
   plus: html`<svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14"><path d="M7 1 V13 M1 7 H13" stroke="currentColor" stroke-width="3"></path></svg>`,
 };
 

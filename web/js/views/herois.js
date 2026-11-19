@@ -1,11 +1,14 @@
 import { api } from '../api.js';
-import { html, nav, toast } from '../ui.js';
+import { html, nav, toast, icons } from '../ui.js';
 import { sprite, coin, num, STATS, BLURB, statOf } from '../game.js';
 
 export async function view(ctx) {
   const s = await api.get('state');
   const g = s.game;
   const free = s.catalog.filter((c) => !g.heroes.some((h) => h.id === c.id));
+  // Cada chefe de 10 em 10 libera um herói; o primeiro veio de graça.
+  const opened = g.heroes.length + g.recruits;
+  const locked = Array.from({ length: s.catalog.length - opened }, (_, i) => 10 * (opened + i));
   const card = (h) => {
     const spec = statOf(h.spec);
     return html`<div class="card" style="display:flex;gap:12px;align-items:center;padding:10px 12px 10px 10px;${h.inSquad ? 'border-color:var(--accent)' : ''}">
@@ -30,7 +33,8 @@ export async function view(ctx) {
             <span style="flex:1"><span class="pf" style="display:block;font-size:16px">${c.name} <span class="small" style="color:${statOf(c.spec).color}">${statOf(c.spec).label}</span></span>
             <span class="small muted">${BLURB[c.id]}</span></span></button>`)}</div></div>` : ''}
         ${g.heroes.map(card)}
-        ${free.length && !g.recruits ? html`<p class="small muted" style="text-align:center">Mais ${free.length} ${free.length === 1 ? 'herói entra' : 'heróis entram'} vencendo os chefes dos andares 10 a 40.</p>` : ''}
+        ${locked.length ? html`<div class="locked" style="margin-top:10px">${locked.map((floor) => html`<div class="lock" role="img" aria-label="Herói bloqueado: libera no andar ${floor}">
+          <b>ANDAR ${floor}</b>${icons.lock}</div>`)}</div>` : ''}
       </div></div>${nav('#/herois')}`,
     actions: {
       async toggle(el) {
