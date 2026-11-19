@@ -1,6 +1,9 @@
 package game
 
-import "math"
+import (
+	"encoding/json"
+	"math"
+)
 
 type Stat int
 
@@ -94,4 +97,8 @@ func sumPoints(p [nStats]int) int {
 // XPToNext: XP para ir do nível L para L+1.
 func XPToNext(level int) int {
 	return int(math.Round(XPBase * math.Pow(XPGrowth, float64(level-1))))
+}
+
+func (h HeroInfo) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]string{"id": h.ID, "name": h.Name, "class": h.Class, "spec": StatKeys[h.Spec]})
 }

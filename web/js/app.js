@@ -1,20 +1,32 @@
+import { api } from './api.js';
 import { toString, toast } from './ui.js';
 import * as today from './views/today.js';
 import * as habits from './views/habits.js';
 import * as habit from './views/habit.js';
 import * as habitForm from './views/habit-form.js';
 import * as settings from './views/settings.js';
-import * as soon from './views/soon.js';
+import * as start from './views/start.js';
+import * as retorno from './views/retorno.js';
+import * as torre from './views/torre.js';
+import * as chefe from './views/chefe.js';
+import * as herois from './views/herois.js';
+import * as heroi from './views/heroi.js';
+import * as itens from './views/itens.js';
 
 const routes = {
   '/': today,
+  '/inicio': start,
+  '/retorno': retorno,
+  '/torre': torre,
+  '/chefe': chefe,
+  '/herois': herois,
+  '/heroi': heroi,
+  '/itens': itens,
   '/habitos': habits,
   '/habito': habit,
   '/habito/novo': habitForm,
   '/habito/editar': habitForm,
   '/ajustes': settings,
-  '/torre': soon,
-  '/herois': soon,
 };
 
 const view = document.getElementById('view');
@@ -24,7 +36,7 @@ async function render() {
   const [path, query = ''] = location.hash.slice(1).split('?');
   const route = routes[path || '/'] ?? today;
   const params = Object.fromEntries(new URLSearchParams(query));
-  const ctx = { path: path || '/', params, refresh: render, go: (h) => { location.hash = h; } };
+  const ctx = { path: path || '/', params, refresh: render, go: (h) => { if (location.hash === h) render(); else location.hash = h; } };
   try {
     const out = await route.view(ctx);
     actions = out.actions ?? {};
@@ -33,6 +45,19 @@ async function render() {
   } catch (e) {
     view.innerHTML = `<p class="empty">Não deu para carregar: ${e.message}</p>`;
   }
+}
+
+// Ao abrir (ou voltar ao app): depois de um tempo fora, o resumo do que
+// aconteceu; senão a visita já conta como vista.
+async function arrive() {
+  try {
+    const s = await api.get('state');
+    if (retorno.worthShowing(s)) {
+      location.hash = '#/retorno';
+      return;
+    }
+    await api.put('seen');
+  } catch { /* sem servidor: a tela mostra o erro */ }
 }
 
 // Um handler só no #view: os filhos são recriados a cada render.
@@ -52,5 +77,9 @@ for (const type of ['click', 'change', 'submit']) {
 }
 
 window.addEventListener('hashchange', render);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
-render();
+document.addEventListener('visibilitychange', async () => {
+  if (document.hidden) return;
+  await arrive();
+  render();
+});
+arrive().then(render);

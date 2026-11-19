@@ -92,3 +92,69 @@ a.row:hover{background:var(--surface2);color:var(--text)}
 
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--surface);border:2px solid var(--accent);padding:8px 14px;font-family:'Pixelify Sans',monospace;z-index:10}
 .empty{padding:24px 14px;text-align:center;color:var(--muted)}
+
+/* ---- Jogo: sprites 0x72 (CC0), sempre pixelados ---- */
+.spr{display:inline-block;image-rendering:pixelated;background-repeat:no-repeat;flex:none}
+.h-oren{background-image:url(../assets/sprites/oren.png)}
+.h-kael{background-image:url(../assets/sprites/kael.png)}
+.h-rasko{background-image:url(../assets/sprites/rasko.png)}
+.h-lyra{background-image:url(../assets/sprites/lyra.png)}
+/* Brom (anão) usa o cavaleiro tingido até entrar a arte do anão. */
+.h-brom{background-image:url(../assets/sprites/kael.png);filter:hue-rotate(150deg) saturate(1.4)}
+/* Fita de 8 quadros 16×28: 0–3 parado, 4–7 correndo. */
+.x2{width:32px;height:56px;background-size:256px 56px}
+.x3{width:48px;height:84px;background-size:384px 84px}
+.x4{width:64px;height:112px;background-size:512px 112px}
+.x2.idle{animation:i2 1s steps(4) infinite}.x2.run{animation:r2 .5s steps(4) infinite}
+.x3.idle{animation:i3 1s steps(4) infinite}.x3.run{animation:r3 .5s steps(4) infinite}
+.x4.idle{animation:i4 1s steps(4) infinite}
+@keyframes i2{from{background-position:0 0}to{background-position:-128px 0}}
+@keyframes r2{from{background-position:-128px 0}to{background-position:-256px 0}}
+@keyframes i3{from{background-position:0 0}to{background-position:-192px 0}}
+@keyframes r3{from{background-position:-192px 0}to{background-position:-384px 0}}
+@keyframes i4{from{background-position:0 0}to{background-position:-256px 0}}
+.coin{display:inline-block;width:12px;height:14px;background:url(../assets/sprites/coin.png) 0 0/48px 14px;image-rendering:pixelated;animation:spin .6s steps(4) infinite;vertical-align:-2px}
+@keyframes spin{from{background-position:0 0}to{background-position:-48px 0}}
+.boss{width:128px;height:144px;background:url(../assets/sprites/zombie.png) 0 0/1024px 144px;image-rendering:pixelated;transform:scaleX(-1);animation:boss .9s steps(4) infinite}
+@keyframes boss{from{background-position:0 0}to{background-position:-512px 0}}
+
+.scn{position:relative;overflow:hidden;background:var(--bg) url(../assets/sprites/floor.png) 0 100%/768px 240px repeat-x;image-rendering:pixelated}
+.scn.go{animation:scroll 4s linear infinite}
+@keyframes scroll{from{background-position:0 100%}to{background-position:-768px 100%}}
+.scn::before{content:"";position:absolute;inset:0 0 auto 0;height:70px;background:linear-gradient(180deg,var(--bg),rgba(9,10,20,0))}
+.scn.rest::after{content:"";position:absolute;inset:0;background:rgba(9,10,20,.45)}
+.scn .team{position:absolute;left:24px;bottom:40px;display:flex;gap:10px;align-items:flex-end;z-index:1}
+.zz{position:absolute;z-index:2;font-family:'Pixelify Sans',monospace;color:var(--def);opacity:0;animation:zz 3s infinite}
+@keyframes zz{0%{opacity:0;transform:translate(0,0)}20%{opacity:1}100%{opacity:0;transform:translate(10px,-34px)}}
+.hud{position:absolute;left:14px;right:14px;top:8px;display:flex;align-items:center;gap:10px;z-index:2}
+.cells{flex:1;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}
+.cells i{height:14px;background:var(--line)}
+.cells .past{background:var(--line2)}
+.cells .now{background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.cells .bs{background:var(--bad)}
+
+.cards{margin-top:-46px;position:relative;z-index:3;padding:0 12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.hc{padding:6px 8px;display:flex;gap:6px;align-items:center;box-shadow:0 6px 16px rgba(0,0,0,.5);text-decoration:none;color:var(--text);min-width:0}
+.hc:hover{color:var(--text)}
+.bar{height:4px;background:var(--line);display:block}
+.bar>span{display:block;height:100%;background:var(--accent)}
+
+.ring{flex:none}
+.big-num{font-family:'Pixelify Sans',monospace;font-size:26px;line-height:1}
+.label{font-family:'Pixelify Sans',monospace;font-size:12px;color:var(--muted);letter-spacing:1px}
+
+/* Torre. */
+.fl{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:10px;min-height:44px;padding-right:12px;text-decoration:none;color:var(--text)}
+.num{height:36px;display:flex;align-items:center;justify-content:center;font-family:'Pixelify Sans',monospace;font-size:15px;border-radius:3px;position:relative;z-index:1}
+
+.stat-row{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 6px 0 12px;border-bottom:1px solid var(--line)}
+.stat-row:last-child{border-bottom:0}
+.buy{min-width:92px;height:40px;border:2px solid var(--accent);background:var(--surface2);color:var(--accent);font-family:'Pixelify Sans',monospace;font-size:14px;border-radius:3px}
+.buy:disabled{border-color:var(--line2);color:var(--muted)}
+.r0{color:var(--muted)}.r1{color:var(--def)}.r2{color:var(--sor)}.r3{color:var(--accent)}
+.slot{width:28px;height:28px;flex:none;border:2px solid var(--line2);background:var(--surface2)}
+.pick{display:flex;gap:12px;align-items:center;padding:10px 12px 10px 10px;text-decoration:none;color:var(--text);width:100%;background:var(--surface);border:2px solid var(--line);border-radius:4px;text-align:left}
+.pick[aria-pressed=true]{border-color:var(--accent)}
+.pad-box{width:64px;height:92px;flex:none;background:var(--surface2);border:2px solid var(--line);display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.st4{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin-top:6px;font-size:11px;color:var(--muted)}
+.st4 b{display:block;font-family:'Pixelify Sans',monospace;font-size:14px;font-weight:500;color:var(--text)}

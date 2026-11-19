@@ -1,0 +1,64 @@
+import { api } from '../api.js';
+import { html, nav } from '../ui.js';
+import { sprite, coin, num, hm, clock } from '../game.js';
+
+const NAMES = ['Salão de pedra', 'Cripta úmida', 'Galeria dos ossos', 'Cripta de gelo', 'Forja abandonada'];
+const zone = (n) => NAMES[Math.floor((n - 1) / 10) % NAMES.length];
+
+function describe(e, heroes) {
+  const name = (id) => heroes.find((h) => h.id === id)?.name;
+  switch (e.kind) {
+    case 'floor': return html`andar ${e.floor} · +${e.coins} ${coin}`;
+    case 'boss': return e.win ? `venceu o chefe do andar ${e.floor}` : `perdeu para o chefe do andar ${e.floor}`;
+    case 'level': return `${name(e.hero)} subiu para o nível ${e.floor}`;
+    case 'recruit': return `${name(e.hero)} entrou no grupo`;
+    default: return '';
+  }
+}
+
+export async function view() {
+  const s = await api.get('state');
+  const g = s.game;
+  const moving = s.folego.exploring;
+  const squad = g.squad.map((id) => g.heroes.find((h) => h.id === id));
+  const rows = [
+    html`<div class="fl"><span class="num" style="background:var(--surface2);color:var(--muted);border:2px dashed var(--line2)">${g.nextBoss + 1}</span>
+      <span><span style="display:block;color:var(--muted)">${zone(g.nextBoss + 1)}</span><span class="small muted">Abre depois do chefe</span></span><span></span></div>`,
+    html`<a href="#/chefe" class="fl" style="min-height:52px"><span class="num" style="background:var(--bad);color:var(--bg);height:46px;flex-direction:column;line-height:1.05;font-weight:700"><span style="font-size:10px">CHEFE</span>${g.nextBoss}</span>
+      <span><span style="display:block;font-weight:600">Zumbi colosso</span><span class="small muted">pede <b style="color:var(--text)">${num(g.recommended)}</b> de poder · você tem ${num(g.power)}</span></span><span class="pf" style="color:var(--bad)">›</span></a>`,
+  ];
+  for (let n = g.nextBoss - 1; n >= Math.max(1, g.floor - 3); n--) {
+    if (n > g.floor) {
+      rows.push(html`<div class="fl"><span class="num" style="background:var(--surface);color:var(--muted);border:2px solid var(--line)">${n}</span><span class="small muted">${zone(n)}</span><span></span></div>`);
+    } else if (n === g.floor) {
+      const pct = Math.round(g.progress * 100);
+      rows.push(html`<div class="fl" style="min-height:60px"><span class="num" style="background:var(--accent);color:var(--bg);height:56px;box-shadow:0 0 12px var(--accent)"><b>${n}</b></span>
+        <span><span style="display:block;font-weight:600">${g.training ? 'Treinando aqui' : moving ? 'Explorando agora' : 'Parado aqui'}</span>
+        <span class="bar" style="height:6px;margin-top:6px"><span style="width:${pct}%"></span></span>
+        <span class="small muted">${pct}% · o andar leva ~${hm(g.floorMins)} de fôlego</span></span><span></span></div>`);
+    } else {
+      rows.push(html`<div class="fl"><span class="num" style="background:var(--line2)">${n}</span><span class="small muted">${zone(n)}</span><span class="pf small" style="color:var(--accent)">+${10 + 3 * n}</span></div>`);
+    }
+  }
+  const recent = g.log.filter((e) => e.kind !== 'chest').slice(-5).reverse();
+  return {
+    html: html`<div class="content">
+      <div class="scn ${moving ? 'go' : 'rest'}" role="img" aria-label="O esquadrão na torre" style="height:150px">
+        <div class="hud" style="justify-content:space-between"><span class="pf" style="font-size:24px">Torre</span><span class="pf" style="color:var(--accent)">${num(g.coins)} ${coin}</span></div>
+        <div class="team" style="bottom:8px;left:40px">${squad.map((h) => sprite(h.id, 'x3', moving ? 'run' : 'idle')).reverse()}</div>
+      </div>
+      <div class="grid3" style="padding:10px 14px 6px;text-align:center">
+        <div><div class="pf" style="font-size:20px">${g.floor}</div><div class="small muted">andar atual</div></div>
+        <div><div class="pf" style="font-size:20px">${g.beaten}</div><div class="small muted">chefes vencidos</div></div>
+        <div><div class="pf" style="font-size:20px;color:var(--good)">${hm(Math.max(0, s.folego.balance))}</div><div class="small muted">de fôlego</div></div>
+      </div>
+      <div role="list" aria-label="Andares" style="position:relative;padding:4px 0 0 12px;display:flex;flex-direction:column;gap:4px">
+        <div aria-hidden="true" style="position:absolute;left:37px;top:14px;bottom:14px;width:2px;background:var(--line)"></div>
+        ${rows}
+      </div>
+      ${recent.length ? html`<div class="card small muted" style="margin:10px 14px 0;padding:10px 12px;line-height:1.7">
+        <div class="pf" style="font-size:13px;color:var(--text)">Registro</div>
+        ${recent.map((e) => html`<div><span class="pf" style="color:var(--text)">${clock(e.at)}</span> ${describe(e, g.heroes)}</div>`)}</div>` : ''}
+    </div>${nav('#/torre')}`,
+  };
+}
