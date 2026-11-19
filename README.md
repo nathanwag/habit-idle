@@ -10,6 +10,8 @@ go test ./...
 go run ./cmd/habit-idle   # http://127.0.0.1:3002
 ```
 
+Deploy na Pi: `sh scripts/deploy.sh` (detalhes no CLAUDE.md).
+
 Regras do jogo: [docs/regras.md](docs/regras.md).
 
 Arte pixel: 0x72 DungeonTileset II (CC0).

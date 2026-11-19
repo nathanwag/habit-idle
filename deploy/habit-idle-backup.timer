@@ -1,0 +1,9 @@
+[Unit]
+Description=habit-idle: backup aos domingos às 3h20
+
+[Timer]
+OnCalendar=Sun 03:20
+Persistent=true
+
+[Install]
+WantedBy=timers.target

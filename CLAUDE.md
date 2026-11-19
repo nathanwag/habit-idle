@@ -34,6 +34,15 @@ go run ./cmd/habit-idle balance  # tabela de ritmo da torre (vai para docs/regra
 HABIT_IDLE_DB=./data/demo.db go run ./cmd/habit-idle demo   # banco novo com 20 dias de dados
 ```
 
+## Deploy
+
+`sh scripts/deploy.sh`: testa, compila para arm64, envia e roda
+`deploy/install.sh` na Pi, que é idempotente: serviço `habit-idle` (porta
+3002, dados em `~/data/habit-idle`), backup aos domingos 3h20 no
+`homelab-backups` (`habit-idle backup <arquivo>`), Caddy em
+`http://habit-idle.local` e Tailscale Serve na porta 10000. Os arquivos de
+`deploy/` e os `.sh` ficam com LF (`.gitattributes`): a Pi não aceita CRLF.
+
 ## Modelo
 
 - `check_log` nunca é apagado: cada marcar/desmarcar é uma linha com a hora,

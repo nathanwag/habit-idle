@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -23,6 +24,17 @@ func main() {
 		log.Fatal(err)
 	}
 	defer d.Close()
+	if len(os.Args) > 2 && os.Args[1] == "backup" {
+		b, err := server.Export(d)
+		if err != nil {
+			log.Fatal(err)
+		}
+		out, _ := json.MarshalIndent(b, "", " ")
+		if err := os.WriteFile(os.Args[2], out, 0o644); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
 	if len(os.Args) > 1 && os.Args[1] == "demo" {
 		if err := demo(d, time.Now()); err != nil {
 			log.Fatal(err)

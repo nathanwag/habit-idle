@@ -1,0 +1,3 @@
+# Scripts e units rodam na Pi: sempre LF.
+deploy/* text eol=lf
+*.sh text eol=lf

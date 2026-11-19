@@ -1,0 +1,10 @@
+[Unit]
+Description=habit-idle: backup semanal dos dados no GitHub
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=nathan
+Environment=HABIT_IDLE_DB=/home/nathan/data/habit-idle/habit-idle.db
+ExecStart=/home/nathan/apps/habit-idle/backup.sh

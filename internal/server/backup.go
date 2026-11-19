@@ -34,33 +34,39 @@ type backup struct {
 	Events   []backupEvent     `json:"events"`
 }
 
-func (s *srv) exportBackup(w http.ResponseWriter, r *http.Request) {
+// Export monta o backup completo (o mesmo do GET /api/backup).
+func Export(d *sql.DB) (any, error) {
 	b := backup{App: backupApp, Version: 1, Checks: []backupCheck{}, Events: []backupEvent{}}
 	var err error
-	if b.Settings, err = db.Settings(s.DB); err != nil {
-		fail(w, err)
-		return
+	if b.Settings, err = db.Settings(d); err != nil {
+		return nil, err
 	}
 	delete(b.Settings, "lastSeen")
-	if b.Habits, err = db.Habits(s.DB); err != nil {
-		fail(w, err)
-		return
+	if b.Habits, err = db.Habits(d); err != nil {
+		return nil, err
 	}
-	log, err := db.CheckLog(s.DB)
+	log, err := db.CheckLog(d)
 	if err != nil {
-		fail(w, err)
-		return
+		return nil, err
 	}
 	for _, e := range log {
 		b.Checks = append(b.Checks, backupCheck{e.HabitID, e.Day, e.At, e.Done})
 	}
-	evs, err := db.Events(s.DB)
+	evs, err := db.Events(d)
 	if err != nil {
-		fail(w, err)
-		return
+		return nil, err
 	}
 	for _, e := range evs {
 		b.Events = append(b.Events, backupEvent{e.At, e.Kind, json.RawMessage(e.Data)})
+	}
+	return b, nil
+}
+
+func (s *srv) exportBackup(w http.ResponseWriter, r *http.Request) {
+	b, err := Export(s.DB)
+	if err != nil {
+		fail(w, err)
+		return
 	}
 	w.Header().Set("Content-Disposition", `attachment; filename="habit-idle-`+s.Now().Format("2006-01-02")+`.json"`)
 	writeJSON(w, http.StatusOK, b)
