@@ -8,6 +8,7 @@ import (
 	"habit-idle/internal/db"
 	"habit-idle/internal/server"
 	"habit-idle/web"
+	_ "time/tzdata"
 )
 
 func main() {
