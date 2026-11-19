@@ -12,6 +12,7 @@ function describe(e, heroes) {
     case 'boss': return e.win ? `venceu o chefe do andar ${e.floor}` : `perdeu para o chefe do andar ${e.floor}`;
     case 'level': return `${name(e.hero)} subiu para o nível ${e.floor}`;
     case 'recruit': return `${name(e.hero)} entrou no grupo`;
+    case 'death': return `o esquadrão caiu no inimigo ${e.enemy} do andar ${e.floor}`;
     default: return '';
   }
 }
@@ -27,11 +28,16 @@ export async function view() {
     : html`<div class="fl"><span class="num pf" style="background:var(--surface2);color:var(--muted);border:2px dashed var(--line2);font-size:18px" aria-label="Próximo andar">?</span><span class="small muted">Próximo andar</span><span></span></div>`];
   for (let n = g.floor; n >= Math.max(1, g.floor - 3); n--) {
     if (n === g.floor) {
-      const pct = Math.round(g.progress * 100);
+      const e = g.enc;
+      let state = 'Caminhando';
+      if (g.training) state = 'Treinando aqui';
+      else if (!moving) state = 'Parado aqui';
+      else if (e.phase === 'fight') state = 'Lutando';
+      else if (e.phase === 'rest') state = 'Descansando';
+      const cells = Array.from({ length: e.of }, (_, i) => html`<i class="${i + 1 < e.enemy ? 'done' : i + 1 === e.enemy ? 'now' : ''}"></i>`);
       rows.push(html`<div class="fl" style="min-height:60px"><span class="num" style="background:var(--accent);color:var(--bg);height:56px;box-shadow:0 0 12px var(--accent)"><b>${n}</b></span>
-        <span><span style="display:block;font-weight:600">${g.training ? 'Treinando aqui' : moving ? 'Explorando agora' : 'Parado aqui'}</span>
-        <span class="bar" style="height:6px;margin-top:6px"><span style="width:${pct}%"></span></span>
-        <span class="small muted">${pct}%</span></span><span></span></div>`);
+        <span><span style="display:flex;justify-content:space-between"><span style="font-weight:600">${state}</span><span class="small muted">inimigo ${e.enemy} de ${e.of}</span></span>
+        <span class="foes" aria-hidden="true">${cells}</span></span><span></span></div>`);
     } else {
       rows.push(html`<div class="fl"><span class="num" style="background:var(--line2)">${n}</span><span class="small muted">${zone(n)}</span><span class="pf small" style="color:var(--accent)">+${10 + 3 * n}</span></div>`);
     }

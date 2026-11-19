@@ -19,7 +19,8 @@ function scene(g, f) {
   <div class="cards">${squad.map((h) => html`<a href="#/heroi?id=${h.id}" class="card hc">${sprite(h.id, 'x2', 'idle')}
     <span style="min-width:0;flex:1"><span class="pf" style="display:block;font-size:14px">${h.name}</span>
     <span style="display:block;font-size:11px;color:var(--muted)">Nv ${h.level}</span>
-    <span class="bar" style="margin-top:4px"><span style="width:${Math.round(100 * h.xp / h.xpNext)}%"></span></span></span></a>`)}</div>`;
+    <span class="bar" style="margin-top:4px" title="vida"><span style="width:${Math.max(0, Math.round(100 * (g.enc.life[h.id] ?? 1) / (g.enc.maxLife[h.id] || 1)))}%;background:var(--good)"></span></span>
+    <span class="bar" style="margin-top:2px;height:2px" title="XP"><span style="width:${Math.round(100 * h.xp / h.xpNext)}%"></span></span></span></a>`)}</div>`;
 }
 
 function folegoLine(f, g) {

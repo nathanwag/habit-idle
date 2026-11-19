@@ -39,28 +39,41 @@ export function itemDesc(it) {
   return STATS.filter((s, i) => it.pts[i] > 0).map((s) => `${s.label} +${it.pts[STATS.indexOf(s)]}`).join(' · ');
 }
 
-// Cena da torre. Explorando: o ciclo de luta do protótipo (só visual, com o
-// dano de verdade de cada herói). Parado: o esquadrão descansa.
+// Cena do andar com o que está acontecendo de verdade (g.enc): caminhando,
+// lutando contra o inimigo atual ou descansando. Sem fôlego, todos parados.
 export function battleScene(g, exploring, { height = 270, bottom = 52, top = '' } = {}) {
   const squad = g.squad.map((id) => g.heroes.find((h) => h.id === id));
-  // squad[0] vai na frente (é quem apanha do chefe).
+  const enc = g.enc;
+  const phase = exploring ? enc.phase : 'stop';
+  // squad[0] vai na frente: é quem apanha.
   const xs = [128, 74, 22];
-  if (!exploring) {
-    return html`<div class="scn rest" role="img" aria-label="O esquadrão descansa: sem fôlego" style="height:${height}px">${top}
-      ${squad.map((h, i) => html`<span class="fh" style="left:${xs[i]}px;bottom:${bottom}px">${sprite(h.id, 'x3', 'idle')}</span>`)}
-      <span class="zz" style="left:${xs[0] + 30}px;bottom:${bottom + 80}px">z</span><span class="zz" style="left:${xs[0] + 50}px;bottom:${bottom + 90}px;animation-delay:1.2s">z</span>
-    </div>`;
-  }
+  const lifePct = (h) => Math.max(0, Math.round(100 * (enc.life[h.id] ?? 1) / (enc.maxLife[h.id] || 1)));
+  const lifeBar = (h) => {
+    const pct = lifePct(h);
+    return html`<span class="life ${pct < 30 ? 'low' : ''}" aria-hidden="true"><span style="width:${pct}%"></span></span>`;
+  };
+  const tag = { walk: 'caminhando', fight: `inimigo ${enc.enemy}/${enc.of}`, rest: 'descansando', stop: 'sem fôlego' }[phase];
+  const heroes = squad.map((h, i) => {
+    const down = lifePct(h) <= 0;
+    const mode = phase === 'walk' ? 'run' : 'idle';
+    return html`<div class="fh ${phase === 'fight' && i === 0 && !down ? 'atk' : ''}" style="left:${xs[i]}px;bottom:${bottom + (i === 1 ? -8 : 0)}px;${down ? 'opacity:.35;filter:grayscale(1)' : ''}">
+      ${phase === 'stop' ? '' : lifeBar(h)}${sprite(h.id, 'x3', mode)}</div>`;
+  });
   const k = 1 - g.fatigue / 100;
-  const dmg = (h) => Math.round(4 * h.points[0] * k);
-  const hit = (i) => dmg(squad[i % squad.length]);
-  return html`<div class="scn fight" role="img" aria-label="O esquadrão luta no andar ${g.floor}" style="height:${height}px">${top}
-    ${squad.map((h, i) => html`<div class="fh ${i === 0 ? 'lunge' : ''}" style="left:${xs[i]}px;bottom:${bottom + (i === 1 ? -8 : 0)}px">
-      <div class="${i === 0 ? 'hurt' : ''}" style="position:absolute;inset:0"><i class="r h-${h.id}"></i><i class="d h-${h.id}"></i></div></div>`)}
-    <div class="foe" style="left:186px;bottom:${bottom - 10}px"><div class="hpb"><span></span></div><div class="fb"><i class="r"></i><i class="d"></i></div></div>
-    <span class="dmg n1" style="left:214px;bottom:${bottom + 70}px">-${hit(0)}</span>
-    <span class="dmg n2" style="left:236px;bottom:${bottom + 62}px;color:var(--def)">-${hit(1)}</span>
-    <span class="dmg n3" style="left:222px;bottom:${bottom + 74}px">-${hit(2) * 2}!</span>
-    <span class="dmg lt" style="left:204px;bottom:${bottom + 30}px">+${10 + 3 * g.floor} ${coin}</span>
+  const front = squad.find((h) => lifePct(h) > 0) ?? squad[0];
+  const foe = phase === 'fight' ? html`<div class="foe" style="left:186px;bottom:${bottom - 10}px">
+      <div class="hpb"><span style="width:${Math.max(0, Math.round(100 * enc.enemyLife / enc.enemyMax))}%"></span></div><div class="fb"></div></div>
+    <span class="dmg" style="left:220px;bottom:${bottom + 80}px">-${Math.round(4 * front.points[0] * k)}</span>` : '';
+  const label = {
+    walk: 'O esquadrão caminha pelo andar',
+    fight: `O esquadrão luta contra o inimigo ${enc.enemy} de ${enc.of}`,
+    rest: 'O esquadrão descansa depois de cair',
+    stop: 'O esquadrão descansa: sem fôlego',
+  }[phase];
+  const zz = phase === 'rest' || phase === 'stop'
+    ? html`<span class="zz" style="left:${xs[0] + 30}px;bottom:${bottom + 80}px">z</span><span class="zz" style="left:${xs[0] + 50}px;bottom:${bottom + 90}px;animation-delay:1.2s">z</span>`
+    : '';
+  return html`<div class="scn ${phase === 'walk' ? 'go' : phase === 'fight' ? '' : 'rest'}" role="img" aria-label="${label}" style="height:${height}px">${top}
+    ${heroes}${foe}${zz}<span class="state-tag">${tag}</span>
   </div>`;
 }

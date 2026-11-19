@@ -26,6 +26,7 @@ export async function view(ctx) {
   const items = log.filter((e) => e.kind === 'chest').map((e) => g.items.find((it) => it.id === e.item)).filter(Boolean);
   const levels = log.filter((e) => e.kind === 'level');
   const bosses = log.filter((e) => e.kind === 'boss');
+  const deaths = log.filter((e) => e.kind === 'death');
   const squad = g.squad.map((id) => g.heroes.find((h) => h.id === id));
   const hour = new Date(s.now).getHours();
   const hello = hour < 12 ? 'BOM DIA' : hour < 18 ? 'BOA TARDE' : 'BOA NOITE';
@@ -45,10 +46,12 @@ export async function view(ctx) {
         <div class="card stat"><b style="color:var(--accent)">+${num(coins)} ${coin}</b><span class="small muted">moedas</span></div>
         <div class="card stat"><b style="color:var(--good)">${num(g.power)}</b><span class="small muted">poder</span></div>
       </div>
-      ${items.length || levels.length || bosses.length ? html`<div class="card">
+      ${items.length || levels.length || bosses.length || deaths.length ? html`<div class="card">
         ${bosses.map((b) => row(b.win ? 'var(--good)' : 'var(--bad)',
           b.win ? `Chefe do andar ${b.floor} vencido!` : `Derrota para o chefe do andar ${b.floor}`,
           b.win ? `+${num(b.coins)} moedas` : 'O esquadrão treina no andar anterior.'))}
+        ${deaths.length ? row('var(--bad)', `O esquadrão caiu ${deaths.length === 1 ? 'uma vez' : `${deaths.length} vezes`}`,
+          `no andar ${deaths.at(-1).floor}: voltou ao primeiro inimigo, sem perder o que ganhou`) : ''}
         ${items.map((it) => row(RCOLOR[it.rarity], it.name, `${RARITY[it.rarity]} · ${itemDesc(it)}`))}
         ${levels.map((l) => row('var(--good)', `${g.heroes.find((h) => h.id === l.hero)?.name} subiu para o nível ${l.floor}`, 'XP da torre'))}
       </div>` : ''}

@@ -39,8 +39,8 @@ func TestComecarOJogoEExplorarComOFolegoDoCheck(t *testing.T) {
 	if !st.Game.Started || len(st.Game.Heroes) != 1 || st.Game.Heroes[0].ID != "oren" {
 		t.Fatalf("jogo = %+v", st.Game)
 	}
-	// 3h às 09:00, 1h30 gasta: o andar 1 (72 min) ficou para trás.
-	if st.Folego.Balance != 90 || !st.Folego.Exploring || st.Game.Floor != 2 || st.Game.Coins != 13 {
+	// 3h às 09:00, 1h30 gasta: o andar 1 leva umas 2h, mas cada inimigo vencido já pagou.
+	if st.Folego.Balance != 90 || !st.Folego.Exploring || st.Game.Floor != 1 || st.Game.Coins < 1 || st.Game.Coins >= 13 {
 		t.Fatalf("estado = %+v", st)
 	}
 }

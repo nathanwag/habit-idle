@@ -11,18 +11,22 @@ func TestComprarPontoCobraPrecoCrescenteENaoDeixaFicarNegativo(t *testing.T) {
 	in := PlayInput{
 		Cal:      cal,
 		Events:   []Event{ev("2026-11-19 08:00", "start", map[string]string{"hero": "oren"})},
-		Segments: explore("2026-11-19 09:00", 6*time.Hour),
-		Now:      at("2026-11-19 16:00"),
+		Segments: explore("2026-11-19 09:00", 7*time.Hour),
+		Now:      at("2026-11-19 18:00"),
 	}
-	before := Play(in).Hero("oren").Points[ATK] // 70 moedas
-	in.Events = append(in.Events,
-		ev("2026-11-19 16:00", "buy", map[string]string{"hero": "oren", "stat": "atk"}), // 50
-		ev("2026-11-19 16:00", "buy", map[string]string{"hero": "oren", "stat": "atk"}), // 58: não tem
-	)
-	in.Now = at("2026-11-19 16:01")
 	st := Play(in)
-	if st.Coins != 20 {
-		t.Fatalf("moedas = %d, quer 20", st.Coins)
+	before, coins := st.Hero("oren").Points[ATK], st.Coins
+	if coins < 50 || coins-50 >= 58 {
+		t.Fatalf("cenário: %d moedas, preciso de 50 a 107", coins)
+	}
+	in.Events = append(in.Events,
+		ev("2026-11-19 18:00", "buy", map[string]string{"hero": "oren", "stat": "atk"}), // 50
+		ev("2026-11-19 18:00", "buy", map[string]string{"hero": "oren", "stat": "atk"}), // 58: não tem
+	)
+	in.Now = at("2026-11-19 18:01")
+	st = Play(in)
+	if st.Coins != coins-50 {
+		t.Fatalf("moedas = %d, quer %d", st.Coins, coins-50)
 	}
 	if got := st.Hero("oren").Points[ATK]; got != before+1 {
 		t.Fatalf("ATK = %d, quer %d", got, before+1)

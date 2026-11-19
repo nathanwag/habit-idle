@@ -103,21 +103,42 @@ Cada herói tem pontos em ATK, DEF, HP, VEL e SORTE:
 ### XP e nível
 
 - XP para ir do nível L para L+1: `100 × 1,12^(L−1)`, arredondado.
-- O XP de cada andar vai inteiro para cada herói do esquadrão.
+- O XP de cada inimigo vai inteiro para cada herói do esquadrão.
 
 ## Torre
 
-Infinita. O andar n tem:
+Infinita. Cada andar tem **12 inimigos**. O esquadrão caminha **5 min** de
+fôlego até cada um e luta com ele; 1 segundo de luta gasta 1 segundo de
+fôlego.
 
-- **vida dos inimigos** `V(n) = 1800 × 1,07^(n−1)`;
-- **ameaça** `A(n) = 100 × 1,07^(n−1)`;
-- **moedas** `10 + 3n`; **XP** `20 + 5n`;
-- **baú**: 20% de chance (sorteio por andar e passagem).
+- **Moedas** `10 + 3n` e **XP** `20 + 5n` do andar n são divididos entre os 12
+  inimigos e entram a cada inimigo vencido (a soma fecha o total exato).
+- **Baú**: 20% de chance ao fechar o andar (sorteio por andar e passagem).
 
-**Tempo do andar** (minutos de fôlego) =
-`V(n) ÷ DPS do esquadrão × max(1, A(n) ÷ vida efetiva do esquadrão)`.
-Ou seja: o dano decide a velocidade, e um esquadrão frágil demais anda mais
-devagar (descansa entre as lutas). Andar comum nunca é perdido.
+### Inimigos
+
+Calibrados por um esquadrão "na média" do andar: heróis no nível que o XP dos
+andares anteriores dá, um herói a mais a cada 10 andares (até 3), cada um com
+a média dos status dos 5 heróis (justo com qualquer herói inicial).
+
+- **Vida** = DPS dessa média × 300 s: ela leva **5 min** para vencer cada
+  inimigo, ou seja, **~2h por andar** (1h caminhando, 1h lutando). Mais forte
+  vence mais rápido; a caminhada fica.
+- **Dano**: 1 golpe/s no primeiro herói vivo, reduzido pela DEF dele, para a
+  média perder **14%** da vida efetiva por luta.
+- **Andares 1 a 5**: o inimigo bate só 30% disso, para nenhum herói inicial
+  cair no começo.
+- A luta é simulada segundo a segundo, como a do chefe, com sorteio fixo.
+
+### Vida e queda
+
+- A vida volta cheia no começo de cada andar e não volta entre as lutas.
+  Caminhando, cada herói vivo recupera **2% da vida máxima por minuto** (~10%
+  entre um inimigo e outro).
+- Herói com vida zero fica caído até o fim do andar; o inimigo passa a bater
+  no próximo.
+- **Todos caídos**: o esquadrão descansa **10 min** de fôlego e recomeça o
+  andar do primeiro inimigo, com vida cheia. Moedas e XP já ganhos ficam.
 
 ### Chefe (andares 10, 20, 30…)
 
@@ -165,22 +186,23 @@ devagar (descansa entre as lutas). Andar comum nunca é perdido.
 
 ## Ritmo esperado
 
-Gerado por `go run ./cmd/habit-idle balance` (esquadrão de referência, sem
-compras nem itens). Regerar ao mudar `balance.go`.
+Gerado por `go run ./cmd/habit-idle balance` (sem compras nem itens; "Kaels"
+é o mesmo número de heróis, todos iguais ao Kael, o que menos bate).
+Regerar ao mudar `balance.go`.
 
-| Andar | Nível | Heróis | Min/andar | Min/andar (só Kael) | Moedas | XP |
-|---|---|---|---|---|---|---|
-| 1 | 1 | 1 | 72 | 180 | 13 | 25 |
-| 5 | 2 | 1 | 75 | 180 | 25 | 45 |
-| 10 | 4 | 1 | 72 | 164 | 40 | 70 |
-| 15 | 6 | 2 | 51 | 163 | 55 | 95 |
-| 20 | 9 | 2 | 48 | 151 | 70 | 120 |
-| 25 | 11 | 3 | 41 | 168 | 85 | 145 |
-| 30 | 13 | 3 | 46 | 192 | 100 | 170 |
-| 35 | 15 | 3 | 54 | 223 | 115 | 195 |
-| 40 | 17 | 3 | 64 | 299 | 130 | 220 |
-| 45 | 19 | 3 | 77 | 434 | 145 | 245 |
-| 50 | 20 | 3 | 100 | 739 | 160 | 270 |
+| Andar | Nível | Heróis | Vida do inimigo | Min/andar | Vida por luta | Min/andar (Kaels) | Vida por luta (Kaels) | Moedas | XP |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 1 | 1 | 4078 | 120 | 4% | 142 | 7% | 13 | 25 |
+| 5 | 2 | 1 | 5313 | 120 | 4% | 141 | 6% | 25 | 45 |
+| 10 | 4 | 1 | 8133 | 120 | 14% | 140 | 20% | 40 | 70 |
+| 15 | 6 | 2 | 22881 | 120 | 14% | 140 | 20% | 55 | 95 |
+| 20 | 9 | 2 | 34729 | 120 | 14% | 141 | 19% | 70 | 120 |
+| 25 | 11 | 3 | 65968 | 120 | 14% | 141 | 19% | 85 | 145 |
+| 30 | 13 | 3 | 81544 | 120 | 14% | 141 | 19% | 100 | 170 |
+| 35 | 15 | 3 | 98892 | 120 | 14% | 142 | 18% | 115 | 195 |
+| 40 | 17 | 3 | 118080 | 120 | 14% | 142 | 18% | 130 | 220 |
+| 45 | 19 | 3 | 139177 | 120 | 14% | 142 | 18% | 145 | 245 |
+| 50 | 20 | 3 | 150464 | 120 | 14% | 142 | 18% | 160 | 270 |
 
 | Chefe | Nível da referência | Heróis | Poder recomendado | Vida | Dano/s |
 |---|---|---|---|---|---|

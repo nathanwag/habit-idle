@@ -35,24 +35,30 @@ const (
 
 // Torre.
 const (
-	FloorLife    = 1800.0
-	FloorThreat  = 100.0
-	FloorGrowth  = 1.07
-	FloorCoins   = 10 // + FloorCoinsN × andar
-	FloorCoinsN  = 3
-	FloorXP      = 20 // + FloorXPN × andar
-	FloorXPN     = 5
-	ChestChance  = 0.20
-	XPBase       = 100.0
-	XPGrowth     = 1.12
-	BossEvery    = 10
-	BossKillSecs = 60.0 // a referência mata o chefe nisso
-	BossDieSecs  = 75.0 // o chefe mataria a referência nisso
-	BossMaxSecs  = 120.0
-	BossTick     = 0.1
-	BossCoins    = 250 // × k
-	BossXP       = 200 // × k
-	RecruitUntil = 40  // chefes que liberam recrutamento: 10, 20, 30, 40
+	FloorCoins      = 10 // + FloorCoinsN × andar, divididas entre os inimigos
+	FloorCoinsN     = 3
+	FloorXP         = 20 // + FloorXPN × andar, idem
+	FloorXPN        = 5
+	EnemiesPerFloor = 12
+	WalkMins        = 5.0   // caminhada até o próximo inimigo (recupera vida)
+	FightSecs       = 300.0 // a referência mata um inimigo nisso (1 s de luta = 1 s de fôlego)
+	EnemyBite       = 0.14  // parte da vida efetiva da referência que um inimigo tira
+	EnemySpeed      = 1.0   // golpes/s do inimigo
+	SafeFloors      = 5     // andares iniciais com inimigos mais fracos
+	SafeFactor      = 0.3
+	RegenPerMin     = 0.02 // da vida máxima, caminhando
+	DeathRestMins   = 10.0 // descanso depois que todos caem
+	ChestChance     = 0.20
+	XPBase          = 100.0
+	XPGrowth        = 1.12
+	BossEvery       = 10
+	BossKillSecs    = 60.0 // a referência mata o chefe nisso
+	BossDieSecs     = 75.0 // o chefe mataria a referência nisso
+	BossMaxSecs     = 120.0
+	BossTick        = 0.1
+	BossCoins       = 250 // × k
+	BossXP          = 200 // × k
+	RecruitUntil    = 40  // chefes que liberam recrutamento: 10, 20, 30, 40
 )
 
 // Equipamento e loja.

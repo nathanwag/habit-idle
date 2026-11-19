@@ -83,3 +83,9 @@ document.addEventListener('visibilitychange', async () => {
   render();
 });
 arrive().then(render);
+
+// Hoje e Torre mostram a luta em andamento: atualizam sozinhas a cada 30 s.
+setInterval(() => {
+  const path = location.hash.slice(1).split('?')[0] || '/';
+  if (!document.hidden && (path === '/' || path === '/torre')) render();
+}, 30000);

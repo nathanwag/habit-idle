@@ -30,26 +30,6 @@ func TestPoderDoHeroiNivelUm(t *testing.T) {
 	}
 }
 
-func TestSeisHorasDeFolegoComOOrenNivelUm(t *testing.T) {
-	st := Play(PlayInput{
-		Cal:      cal,
-		Events:   []Event{ev("2026-11-19 08:00", "start", map[string]string{"hero": "oren"})},
-		Segments: explore("2026-11-19 09:00", 6*time.Hour),
-		Now:      at("2026-11-19 16:00"),
-	})
-	// DPS 40 × 0,6 × 1,04 = 24,96. Andares 1 a 4: 72 + 77 + 83 + 88 min ≈ 320 min < 6h;
-	// o 5º (nível 2) pede mais 63 min. Moedas 13+16+19+22; XP 25+30+35+40 = 130 (nível 2 aos 100).
-	if st.Floor != 5 {
-		t.Errorf("andar = %d, quer 5", st.Floor)
-	}
-	if st.Coins != 70 {
-		t.Errorf("moedas = %d, quer 70", st.Coins)
-	}
-	if h := st.Hero("oren"); h == nil || h.Level != 2 || h.XP != 30 {
-		t.Errorf("oren = %+v", h)
-	}
-}
-
 func TestSemStartNaoHaJogo(t *testing.T) {
 	st := Play(PlayInput{Cal: cal, Segments: explore("2026-11-19 09:00", time.Hour), Now: at("2026-11-19 16:00")})
 	if st.Started || st.Floor != 1 || st.Coins != 0 {
@@ -71,8 +51,8 @@ func TestOrenNoNivelDaReferenciaVenceOChefeDoAndar10ELiberaRecrutamento(t *testi
 	st := Play(PlayInput{
 		Cal:      cal,
 		Events:   []Event{ev("2026-11-19 08:00", "start", map[string]string{"hero": "oren"})},
-		Segments: explore("2026-11-19 09:00", 16*time.Hour),
-		Now:      at("2026-11-20 05:00"),
+		Segments: explore("2026-11-19 09:00", 30*time.Hour),
+		Now:      at("2026-11-20 15:00"),
 	})
 	b := bosses(st)
 	if len(b) != 1 || !b[0].Win || b[0].Floor != 10 {
@@ -115,16 +95,16 @@ func TestRecrutaEntraNoNivelDoMaisBaixoEOEsquadraoEscolheQuemGanhaXP(t *testing.
 	in := PlayInput{
 		Cal:      cal,
 		Events:   []Event{ev("2026-11-19 08:00", "start", map[string]string{"hero": "oren"})},
-		Segments: explore("2026-11-19 09:00", 16*time.Hour),
-		Now:      at("2026-11-20 05:00"),
+		Segments: explore("2026-11-19 09:00", 30*time.Hour),
+		Now:      at("2026-11-20 15:00"),
 	}
 	st := Play(in)
 	level := st.Hero("oren").Level
 	in.Events = append(in.Events,
-		ev("2026-11-20 05:00", "recruit", map[string]string{"hero": "lyra"}),
-		ev("2026-11-20 05:00", "recruit", map[string]string{"hero": "brom"}), // só havia 1
+		ev("2026-11-20 15:00", "recruit", map[string]string{"hero": "lyra"}),
+		ev("2026-11-20 15:00", "recruit", map[string]string{"hero": "brom"}), // só havia 1
 	)
-	in.Now = at("2026-11-20 05:01")
+	in.Now = at("2026-11-20 15:01")
 	st = Play(in)
 	if st.Hero("brom") != nil || st.Hero("lyra") == nil || st.Hero("lyra").Level != level {
 		t.Fatalf("heróis = %+v", st.Heroes)
@@ -133,11 +113,11 @@ func TestRecrutaEntraNoNivelDoMaisBaixoEOEsquadraoEscolheQuemGanhaXP(t *testing.
 		t.Fatalf("esquadrão = %v", st.Squad)
 	}
 
-	in.Events = append(in.Events, ev("2026-11-20 05:01", "squad", map[string][]string{"heroes": {"lyra"}}))
-	in.Segments = append(in.Segments, explore("2026-11-20 06:00", 2*time.Hour)...)
-	in.Now = at("2026-11-20 09:00")
+	in.Events = append(in.Events, ev("2026-11-20 15:01", "squad", map[string][]string{"heroes": {"lyra"}}))
+	in.Segments = append(in.Segments, explore("2026-11-20 16:00", 2*time.Hour)...)
+	in.Now = at("2026-11-20 19:00")
 	st = Play(in)
-	if st.Hero("oren").Level != level || st.Hero("oren").XP != Play(PlayInput{Cal: cal, Events: in.Events[:1], Segments: in.Segments[:1], Now: at("2026-11-20 05:00")}).Hero("oren").XP {
+	if st.Hero("oren").Level != level || st.Hero("oren").XP != Play(PlayInput{Cal: cal, Events: in.Events[:1], Segments: in.Segments[:1], Now: at("2026-11-20 15:00")}).Hero("oren").XP {
 		t.Fatalf("oren fora do esquadrão ganhou XP")
 	}
 	if st.Hero("lyra").XP == 0 && st.Hero("lyra").Level == level {
