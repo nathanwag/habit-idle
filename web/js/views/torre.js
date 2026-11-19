@@ -1,6 +1,6 @@
 import { api } from '../api.js';
 import { html, nav } from '../ui.js';
-import { sprite, coin, num, hm, clock } from '../game.js';
+import { coin, num, hm, clock, battleScene } from '../game.js';
 
 const NAMES = ['Salão de pedra', 'Cripta úmida', 'Galeria dos ossos', 'Cripta de gelo', 'Forja abandonada'];
 const zone = (n) => NAMES[Math.floor((n - 1) / 10) % NAMES.length];
@@ -20,7 +20,6 @@ export async function view() {
   const s = await api.get('state');
   const g = s.game;
   const moving = s.folego.exploring;
-  const squad = g.squad.map((id) => g.heroes.find((h) => h.id === id));
   // Para cima só se vê o próximo andar, e só o chefe tem cara antes de chegar.
   const rows = [g.nextBoss === g.floor + 1
     ? html`<a href="#/chefe" class="fl" style="min-height:52px"><span class="num" style="background:var(--bad);color:var(--bg);height:46px;flex-direction:column;line-height:1.05;font-weight:700"><span style="font-size:10px">CHEFE</span>${g.nextBoss}</span>
@@ -40,10 +39,7 @@ export async function view() {
   const recent = g.log.filter((e) => e.kind !== 'chest').slice(-5).reverse();
   return {
     html: html`<div class="content">
-      <div class="scn ${moving ? 'go' : 'rest'}" role="img" aria-label="O esquadrão na torre" style="height:150px">
-        <div class="hud" style="justify-content:space-between"><span class="pf" style="font-size:24px">Torre</span><span class="pf" style="color:var(--accent)">${num(g.coins)} ${coin}</span></div>
-        <div class="team" style="bottom:8px;left:40px">${squad.map((h) => sprite(h.id, 'x3', moving ? 'run' : 'idle')).reverse()}</div>
-      </div>
+      ${battleScene(g, moving, { height: 170, bottom: 8, top: html`<div class="hud" style="justify-content:space-between"><span class="pf" style="font-size:24px">Torre</span><span class="pf" style="color:var(--accent)">${num(g.coins)} ${coin}</span></div>` })}
       <div class="grid3" style="padding:10px 14px 6px;text-align:center">
         <div><div class="pf" style="font-size:20px">${g.floor}</div><div class="small muted">andar atual</div></div>
         <div><div class="pf" style="font-size:20px">${g.beaten}</div><div class="small muted">chefes vencidos</div></div>

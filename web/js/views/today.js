@@ -1,6 +1,6 @@
 import { api } from '../api.js';
 import { html, nav, hours } from '../ui.js';
-import { sprite, coin, num, hm, clock } from '../game.js';
+import { sprite, coin, num, hm, clock, battleScene } from '../game.js';
 
 function scene(g, f) {
   const squad = g.squad.map((id) => g.heroes.find((h) => h.id === id));
@@ -10,16 +10,12 @@ function scene(g, f) {
     const cls = n % 10 === 0 ? 'bs' : n < g.floor ? 'past' : n === g.floor ? 'now' : '';
     return html`<i class="${cls}"></i>`;
   });
-  const moving = f.exploring;
-  return html`<div class="scn ${moving ? 'go' : 'rest'}" role="img" aria-label="${moving ? 'O esquadrão explora a torre' : 'O esquadrão descansa'}" style="height:270px">
-    <div class="hud">
+  const hud = html`<div class="hud">
       <a href="#/torre" class="pf" style="font-size:13px;color:var(--muted);text-decoration:none;padding:6px 0;white-space:nowrap">ANDAR <b style="font-size:20px;color:var(--text)">${g.floor}</b></a>
       <div class="cells" aria-hidden="true">${cells}</div>
       <a href="#/chefe" class="pf" style="font-size:12px;color:var(--bad);text-decoration:none;padding:10px 0;white-space:nowrap">CHEFE ${g.nextBoss}</a>
-    </div>
-    <div class="team">${squad.map((h) => sprite(h.id, 'x3', moving ? 'run' : 'idle')).reverse()}</div>
-    ${moving ? '' : html`<span class="zz" style="left:60px;top:120px">z</span><span class="zz" style="left:110px;top:110px;animation-delay:1.2s">z</span>`}
-  </div>
+    </div>`;
+  return html`${battleScene(g, f.exploring, { height: 290, bottom: 58, top: hud })}
   <div class="cards">${squad.map((h) => html`<a href="#/heroi?id=${h.id}" class="card hc">${sprite(h.id, 'x2', 'idle')}
     <span style="min-width:0;flex:1"><span class="pf" style="display:block;font-size:14px">${h.name}</span>
     <span style="display:block;font-size:11px;color:var(--muted)">Nv ${h.level}</span>

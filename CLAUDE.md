@@ -91,5 +91,9 @@ equip, unequip, sell, refine), `PUT /api/seen`, `DELETE /api/game`
 - Sprites: 0x72 DungeonTileset II (CC0) em `web/assets/sprites`, fitas de 8
   quadros 16×28 (0–3 correndo, 4–7 parado). Os quadros soltos do pacote
   (`frames/*_idle_anim_f*` e `*_run_anim_f*`) viram uma fita assim.
+- `battleScene` (`js/game.js`): explorando, a cena roda o ciclo de luta de
+  8 s do protótipo (só visual, com o dano de ATK de cada herói); sem fôlego,
+  o esquadrão fica parado. Animações em CSS, desligadas com
+  `prefers-reduced-motion`.
 - Cores e componentes do Apollo em `css/app.css`; fontes em `web/assets/fonts`
   (nada carregado de fora). Input com 16px para o Safari não dar zoom.

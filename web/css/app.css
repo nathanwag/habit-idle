@@ -162,3 +162,39 @@ a.row:hover{background:var(--surface2);color:var(--text)}
 .locked{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .lock{position:relative;height:96px;background:#000;border:2px dashed var(--line2);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--line2)}
 .lock b{position:absolute;top:-10px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--bg);border:2px solid var(--line2);padding:0 6px;font:500 11px 'Pixelify Sans',monospace;color:var(--muted)}
+
+/* ---- Combate na cena (ciclo de 8 s do protótipo L1, só visual) ----
+   0–35%: o esquadrão corre e o inimigo chega; 46/62/76%: golpes; 88%: o
+   inimigo cai e a moeda sobe. */
+.scn.fight{animation:fscroll 8s linear infinite}
+@keyframes fscroll{0%{background-position:0 100%}35%,100%{background-position:-384px 100%}}
+.fh{position:absolute;width:48px;height:84px;z-index:1}
+.fh i{position:absolute;inset:0;background-size:384px 84px;background-repeat:no-repeat;image-rendering:pixelated}
+.fh .r{animation:r3 .5s steps(4) infinite,showr 8s infinite}
+.fh .d{animation:i3 .8s steps(4) infinite,showd 8s infinite}
+@keyframes showr{0%,34%{opacity:1}35%,100%{opacity:0}}
+@keyframes showd{0%,34%{opacity:0}35%,100%{opacity:1}}
+.fh.lunge{animation:lunge 8s infinite}
+@keyframes lunge{0%,44%,48%,60%,64%,74%,78%,100%{transform:translateX(0)}46%,62%,76%{transform:translateX(16px)}}
+.fh .hurt{position:absolute;inset:0;animation:hurt 8s infinite}
+@keyframes hurt{0%,53%,57%,100%{transform:translateX(0);filter:none}55%{transform:translateX(-6px);filter:brightness(2.6)}}
+.foe{position:absolute;width:96px;height:108px;z-index:1;animation:foe 8s infinite}
+@keyframes foe{0%{transform:translateX(240px);opacity:1}35%,52%{transform:translateX(0)}55%{transform:translateX(-18px)}57%{transform:translateX(0)}82%{opacity:1}88%,100%{transform:translateX(0);opacity:0}}
+.foe .fb{position:absolute;inset:0;transform:scaleX(-1);animation:flash 8s infinite}
+@keyframes flash{0%,45.5%,48%,61.5%,64%,75.5%,78%,100%{filter:none}46.5%,62.5%,76.5%{filter:brightness(3)}}
+.foe .fb i{position:absolute;inset:0;background:url(../assets/sprites/zombie.png) no-repeat;background-size:768px 108px;image-rendering:pixelated}
+.foe .fb .r{animation:zr .5s steps(4) infinite,showr 8s infinite}
+.foe .fb .d{animation:zd .8s steps(4) infinite,showd 8s infinite}
+@keyframes zr{from{background-position:0 0}to{background-position:-384px 0}}
+@keyframes zd{from{background-position:-384px 0}to{background-position:-768px 0}}
+.foe .hpb{position:absolute;left:16px;top:-12px;width:64px;height:6px;background:var(--bg);border:2px solid var(--bg)}
+.foe .hpb span{display:block;height:100%;background:var(--bad);animation:fhp 8s infinite}
+@keyframes fhp{0%,46%{width:100%}47%,62%{width:66%}63%,76%{width:33%}77%,100%{width:0}}
+.dmg{position:absolute;z-index:2;font-family:'Pixelify Sans',monospace;font-size:22px;text-shadow:2px 2px 0 var(--bg);opacity:0}
+.dmg.n1{animation:n1 8s infinite}.dmg.n2{animation:n2 8s infinite}.dmg.n3{animation:n3 8s infinite;font-size:26px;color:var(--accent)}
+.dmg.lt{animation:lt 8s infinite;font-size:18px;color:var(--accent)}
+@keyframes n1{0%,46%{opacity:0;transform:translateY(0)}47%{opacity:1}56%,100%{opacity:0;transform:translateY(-26px)}}
+@keyframes n2{0%,62%{opacity:0;transform:translateY(0)}63%{opacity:1}72%,100%{opacity:0;transform:translateY(-26px)}}
+@keyframes n3{0%,76%{opacity:0;transform:translateY(0)}77%{opacity:1}86%,100%{opacity:0;transform:translateY(-26px)}}
+@keyframes lt{0%,86%{opacity:0;transform:translateY(0)}88%{opacity:1}99%{opacity:0;transform:translateY(-30px)}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.scn.fight,.fh,.fh i,.fh .hurt,.foe,.foe *,.dmg{animation:none!important}.dmg,.foe{opacity:0}.fh .d{opacity:1}.fh .r{opacity:0}}
