@@ -39,6 +39,8 @@ func New(d Deps) http.Handler {
 	mux.HandleFunc("POST /api/events", s.postEvent)
 	mux.HandleFunc("PUT /api/seen", s.seen)
 	mux.HandleFunc("DELETE /api/game", s.resetGame)
+	mux.HandleFunc("GET /api/backup", s.exportBackup)
+	mux.HandleFunc("PUT /api/backup", s.importBackup)
 	if d.Web != nil {
 		mux.Handle("/", http.FileServerFS(d.Web))
 	}

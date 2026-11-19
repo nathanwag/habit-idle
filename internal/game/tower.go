@@ -41,6 +41,7 @@ type HeroState struct {
 	Power   int          `json:"power"`
 	InSquad bool         `json:"inSquad"`
 	Equip   map[Slot]int `json:"equip"` // espaço → id do item
+	Costs   [nStats]int  `json:"costs"` // preço do próximo ponto de cada status
 	spec    Stat
 }
 
@@ -433,6 +434,9 @@ func (s *State) finish() {
 		h.XPNext = XPToNext(h.Level)
 		h.Power = int(math.Round(float64(sumPoints(h.Points)*PowerPerPoint) * (1 - float64(s.Fatigue)/100)))
 		h.InSquad = inSquad[h.ID]
+		for i := range h.Costs {
+			h.Costs[i] = BuyCost(h.Bought[i])
+		}
 		if h.InSquad {
 			total += sumPoints(h.Points)
 		}
@@ -443,6 +447,10 @@ func (s *State) finish() {
 		s.NextBoss = s.Floor + 1
 	}
 	s.Recommended = BossOf(s.NextBoss).Recommended
+	for _, it := range s.Items {
+		it.Value = sellValue(it)
+		it.Pts = it.Points()
+	}
 	s.CanFight = s.Training && s.LastFight != s.in.Cal.DayOf(s.in.Now)
 	if s.Started && len(s.Squad) > 0 {
 		s.FloorMins = floorMinutes(s.Floor, s.fighters(s.in.Now))
