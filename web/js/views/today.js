@@ -4,15 +4,8 @@ import { sprite, coin, num, hm, clock, battleScene } from '../game.js';
 
 function scene(g, f) {
   const squad = g.squad.map((id) => g.heroes.find((h) => h.id === id));
-  const first = Math.floor((g.floor - 1) / 10) * 10 + 1;
-  const cells = Array.from({ length: 10 }, (_, i) => {
-    const n = first + i;
-    const cls = n % 10 === 0 ? 'bs' : n < g.floor ? 'past' : n === g.floor ? 'now' : '';
-    return html`<i class="${cls}"></i>`;
-  });
-  const hud = html`<div class="hud">
+  const hud = html`<div class="hud" style="justify-content:space-between">
       <a href="#/torre" class="pf" style="font-size:13px;color:var(--muted);text-decoration:none;padding:6px 0;white-space:nowrap">ANDAR <b style="font-size:20px;color:var(--text)">${g.floor}</b></a>
-      <div class="cells" aria-hidden="true">${cells}</div>
       <a href="#/chefe" class="pf" style="font-size:12px;color:var(--bad);text-decoration:none;padding:10px 0;white-space:nowrap">CHEFE ${g.nextBoss}</a>
     </div>`;
   return html`${battleScene(g, f.exploring, { height: 290, bottom: 58, top: hud })}
