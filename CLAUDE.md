@@ -40,3 +40,21 @@ go run ./cmd/habit-idle          # http://127.0.0.1:3002
 - `event` guarda as escolhas do jogador. Nível, moedas, andar e itens nunca são
   gravados: o motor recalcula tudo a partir de hábitos, checks, eventos e
   ajustes.
+
+## API
+
+`/api/today`, `/api/habits` (`GET`, `POST`), `/api/habits/{id}` (`GET` com
+estatísticas de 12 semanas, `PUT`, `DELETE`), `PUT /api/checks`
+(`{habitId, day, done}`; dia futuro dá 400) e `/api/settings` (`dayStart`
+"HH:MM", padrão 06:00; `tz` padrão America/Sao_Paulo). Mudar frequência ou
+arquivar passa por `core.Revise`: cria versão a partir do dia.
+
+## Telas (`web/`)
+
+- Hash routing em `js/app.js`; cada tela é um módulo em `js/views/` com
+  `view(ctx)` que devolve `{ html, actions, mount }`.
+- `html` (`js/ui.js`) escapa os valores; template aninhado entra cru.
+  Eventos: `data-click`, `data-change` e `data-submit` com o nome da ação; o
+  `#view` tem um handler só por tipo, porque os filhos são recriados.
+- Cores e componentes do Apollo em `css/app.css`; fontes em `web/assets/fonts`
+  (nada carregado de fora). Input com 16px para o Safari não dar zoom.
